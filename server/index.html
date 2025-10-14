@@ -1,0 +1,593 @@
+[file name]: index.html
+[file content begin]
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather in Miasskoye Village</title>
+    <meta name="google-site-verification" content="igZTCrBdVUq_h0Ljyynl1sF1-Lbp1s3VQzAImRUzZ5U" />
+    <meta name="yandex-verification" content="dbbc347050ab5dbe" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2d3436;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            opacity: 0.9;
+        }
+        /* Large temperature in center */
+        
+        .main-temperature {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 40px 20px;
+            margin: 30px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+        
+        .temperature-value {
+            font-size: 6rem;
+            font-weight: 300;
+            color: #2d3436;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        
+        .temperature-unit {
+            font-size: 3rem;
+            opacity: 0.7;
+            vertical-align: super;
+        }
+        
+        .temperature-label {
+            font-size: 1.5rem;
+            color: #636e72;
+            margin-bottom: 15px;
+        }
+        
+        .last-update {
+            font-size: 1rem;
+            color: #b2bec3;
+        }
+        /* Large forecast card */
+        
+        .forecast-card {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .forecast-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .forecast-icon {
+            font-size: 4rem;
+        }
+        
+        .forecast-text {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .forecast-description {
+            font-size: 1.2rem;
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .forecast-details {
+            text-align: center;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        /* Parameter cards */
+        
+        .parameters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .parameter-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .parameter-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .parameter-title {
+            font-size: 1.1rem;
+            color: #636e72;
+            margin-bottom: 10px;
+        }
+        
+        .parameter-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+        
+        .parameter-unit {
+            font-size: 1rem;
+            color: #b2bec3;
+        }
+        
+        .parameter-details {
+            font-size: 0.9rem;
+            color: #636e72;
+            margin-top: 8px;
+        }
+        /* Chart */
+        
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            color: #2d3436;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .simple-chart {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .chart-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .chart-bar-container {
+            height: 200px;
+            width: 70px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            position: relative;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-radius: 10px;
+            transition: height 0.3s ease;
+        }
+        
+        .chart-label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: center;
+            color: #2d3436;
+        }
+        
+        .chart-value {
+            font-size: 1rem;
+            text-align: center;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+        
+        .chart-time {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-align: center;
+        }
+        
+        .chart-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .chart-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        .chart-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        
+        .chart-btn.active {
+            background: #764ba2;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .error {
+            background: #e17055;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .temperature-value {
+                font-size: 4rem;
+            }
+            .temperature-unit {
+                font-size: 2rem;
+            }
+            .forecast-text {
+                font-size: 1.5rem;
+            }
+            .parameters-grid {
+                grid-template-columns: 1fr;
+            }
+            .simple-chart {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+    </style>
+    <style>
+        /* Local font connection */
+        
+        @font-face {
+            font-family: 'Samsung Sharp Sans';
+            src: url('/fonts/SamsungSharpSans-Bold.woff2') format('woff2'), url('/fonts/SamsungSharpSans-Bold.woff') format('woff');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+            /* Speeds up display */
+        }
+        
+        @font-face {
+            font-family: 'Samsung Sharp Sans';
+            src: url('/fonts/SamsungSharpSans-Regular.woff2') format('woff2'), url('/fonts/SamsungSharpSans-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        @font-face {
+            font-family: 'Samsung Sharp Sans';
+            src: url('/fonts/SamsungSharpSans-Medium.woff2') format('woff2'), url('/fonts/SamsungSharpSans-Medium.woff') format('woff');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        body {
+            font-family: 'Samsung Sharp Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌤 Weather in Miasskoye Village</h1>
+        </div>
+
+        <!-- Large temperature in center -->
+        <div class="main-temperature">
+            <div class="temperature-label">Current Temperature</div>
+            <div class="temperature-value" id="temperature">--
+                <span class="temperature-unit">°C</span>
+            </div>
+            <div class="last-update" id="update-time">Update: --:--</div>
+        </div>
+
+        <!-- Large forecast card -->
+        <div class="forecast-card">
+            <div style="text-align: center; font-size: 0.9rem; opacity: 0.8; margin-bottom: 10px; color: white;">
+                Forecast for the near future
+            </div>
+            <div class="forecast-header">
+                <div class="forecast-icon" id="forecast-icon">🌤</div>
+                <div class="forecast-text" id="forecast-text">Loading...</div>
+            </div>
+            <div class="forecast-description" id="forecast-description">Calculating forecast...</div>
+            <div class="forecast-details" id="forecast-details">Based on atmospheric pressure changes</div>
+        </div>
+
+        <!-- Parameter cards -->
+        <div class="parameters-grid">
+            <div class="parameter-card">
+                <div class="parameter-icon">😊</div>
+                <div class="parameter-title">Feels Like</div>
+                <div class="parameter-value" id="feels-like">--</div>
+                <div class="parameter-unit">degrees</div>
+                <div class="parameter-details" id="feels-like-diff">--</div>
+            </div>
+
+            <div class="parameter-card">
+                <div class="parameter-icon">💧</div>
+                <div class="parameter-title">Humidity</div>
+                <div class="parameter-value" id="humidity">--</div>
+                <div class="parameter-unit">percent</div>
+                <div class="parameter-details">Relative air humidity</div>
+            </div>
+
+            <div class="parameter-card">
+                <div class="parameter-icon">📊</div>
+                <div class="parameter-title">Pressure</div>
+                <div class="parameter-value" id="pressure">--</div>
+                <div class="parameter-unit">mmHg</div>
+                <div class="parameter-details">Atmospheric pressure</div>
+            </div>
+        </div>
+
+        <!-- Changes chart -->
+        <div class="chart-container">
+            <h2 class="chart-title">📊 Weather Conditions Changes</h2>
+
+            <div class="chart-controls">
+                <button class="chart-btn active" onclick="showChart('temperature')">Temperature</button>
+                <button class="chart-btn" onclick="showChart('humidity')">Humidity</button>
+                <button class="chart-btn" onclick="showChart('pressure')">Pressure</button>
+                <button class="chart-btn" onclick="showChart('feels_like')">Feels Like</button>
+            </div>
+
+            <div class="simple-chart" id="simpleChart">
+                <div class="loading">Loading data...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentChartType = 'temperature';
+        let chartData = [];
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentData();
+            loadSimpleChart();
+            loadForecast();
+
+            // Update data every 5 seconds
+            setInterval(loadCurrentData, 5000);
+            // Update chart every 30 seconds
+            setInterval(loadSimpleChart, 30000);
+            // Update forecast every minute
+            setInterval(loadForecast, 60000);
+        });
+
+        // Load current data
+        async function loadCurrentData() {
+            try {
+                const response = await fetch('/api/current');
+                if (!response.ok) throw new Error('Error loading data');
+
+                const data = await response.json();
+
+                // Update main temperature
+                document.getElementById('temperature').innerHTML =
+                    (data.temperature !== null ? data.temperature.toFixed(1) : '--') +
+                    '<span class="temperature-unit">°C</span>';
+
+                // Update parameters
+                document.getElementById('humidity').textContent =
+                    data.humidity !== null ? data.humidity.toFixed(1) : '--';
+                document.getElementById('pressure').textContent =
+                    data.pressure !== null ? data.pressure.toFixed(1) : '--';
+                document.getElementById('feels-like').textContent =
+                    data.feels_like !== null ? data.feels_like.toFixed(1) : '--';
+
+                // Show difference between actual and feels like temperature
+                if (data.temperature !== null && data.feels_like !== null) {
+                    const diff = data.feels_like - data.temperature;
+                    const diffElement = document.getElementById('feels-like-diff');
+                    if (diff > 0.5) {
+                        diffElement.textContent = `Feels warmer by ${diff.toFixed(1)}°C`;
+                        diffElement.style.color = '#e17055';
+                    } else if (diff < -0.5) {
+                        diffElement.textContent = `Feels colder by ${Math.abs(diff).toFixed(1)}°C`;
+                        diffElement.style.color = '#74b9ff';
+                    } else {
+                        diffElement.textContent = 'Matches actual temperature';
+                        diffElement.style.color = '#00b894';
+                    }
+                }
+
+                // Update time
+                const time = new Date(data.timestamp).toLocaleTimeString('ru-RU');
+                document.getElementById('update-time').textContent = `Update: ${time}`;
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error loading current data');
+            }
+        }
+
+        // Load simplified chart
+        async function loadSimpleChart() {
+            try {
+                const response = await fetch('/api/simple_chart');
+                if (!response.ok) throw new Error('Error loading chart data');
+
+                chartData = await response.json();
+
+                if (chartData.length === 0) {
+                    showError('No data for chart');
+                    return;
+                }
+
+                updateSimpleChart();
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error loading chart data');
+            }
+        }
+
+        // Load forecast
+        async function loadForecast() {
+            try {
+                const response = await fetch('/api/forecast');
+                if (!response.ok) throw new Error('Error loading forecast');
+
+                const data = await response.json();
+                document.getElementById('forecast-text').textContent = data.forecast;
+                document.getElementById('forecast-description').textContent = data.description;
+
+                if (data.pressure_change) {
+                    document.getElementById('forecast-details').textContent =
+                        `Pressure change: ${data.pressure_change > 0 ? '+' : ''}${data.pressure_change} mmHg`;
+                }
+
+                // Update icon depending on forecast
+                const icon = document.getElementById('forecast-icon');
+                if (data.forecast.includes('Improvement')) {
+                    icon.textContent = '☀️';
+                } else if (data.forecast.includes('Worsening')) {
+                    icon.textContent = '🌧';
+                } else {
+                    icon.textContent = '🌤';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('forecast-text').textContent = 'Error loading forecast';
+            }
+        }
+
+        // Show chart of specific type
+        function showChart(type) {
+            currentChartType = type;
+
+            // Update active buttons
+            document.querySelectorAll('.chart-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            updateSimpleChart();
+        }
+
+        // Update simplified chart
+        function updateSimpleChart() {
+            if (chartData.length === 0) return;
+
+            const container = document.getElementById('simpleChart');
+            const colors = {
+                temperature: '#e17055',
+                humidity: '#74b9ff',
+                pressure: '#00b894',
+                feels_like: '#e84393'
+            };
+
+            const labels = {
+                temperature: '°C',
+                humidity: '%',
+                pressure: 'mmHg',
+                feels_like: '°C'
+            };
+
+            // Find min and max values for column height normalization
+            const values = chartData.map(item => item[currentChartType]);
+            const maxValue = Math.max(...values);
+            const minValue = Math.min(...values);
+            const range = maxValue - minValue || 1;
+
+            const chartHTML = chartData.map(item => {
+                const value = item[currentChartType];
+                // Normalize height (20-200px)
+                const height = range > 0 ? ((value - minValue) / range) * 180 + 20 : 100;
+
+                // Format time for display
+                let timeDisplay = item.label;
+                if (item.time_suffix) {
+                    timeDisplay += ` ${item.time_suffix}`;
+                }
+
+                return `
+                    <div class="chart-column">
+                        <div class="chart-label">${timeDisplay}</div>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="height: ${height}px; background: ${colors[currentChartType]};"></div>
+                        </div>
+                        <div class="chart-value">${value.toFixed(1)}${labels[currentChartType]}</div>
+                        <div class="chart-time">${item.display_time}</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = chartHTML;
+        }
+
+        // Show error message
+        function showError(message) {
+            const container = document.getElementById('simpleChart');
+            container.innerHTML = `<div class="error">${message}</div>`;
+        }
+    </script>
+</body>
+
+</html>
+[file content end]

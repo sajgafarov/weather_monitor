@@ -6,9 +6,9 @@
 #include <GyverBME280.h>
 #include <ArduinoJson.h>
 
-const char* ssid = "TP-Link_9A10";
-const char* password = "44763954";
-const char* serverURL = "31.207.153.58:5000/api/data";
+const char* ssid = "your wifi name";
+const char* password = "your wifi password";
+const char* serverURL = "your ip/api/data";
 
 GyverBME280 bme;
 

@@ -42,8 +42,7 @@ void loop() {
                   ",\"humidity\":" + String(h, 1) + 
                   ",\"pressure\":" + String(p, 1) + 
                   ",\"device_id\":\"esp8266\"}";
-
-    // ИСПРАВЛЕННАЯ СТРОКА
+
     http.begin(client, serverURL);
     http.addHeader("Content-Type", "application/json");
     
